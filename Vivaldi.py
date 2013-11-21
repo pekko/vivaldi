@@ -103,7 +103,6 @@ class Vivaldi():
 
 	# get the predicted RTT graph following Vivaldi.
 	def getRTTGraph(self):
-		#TODO
 		# 2d-array, key node_id_from, 2nd key node_id_to value rtt)
 		prediction = [0] * self.configuration.getNumNodes()
 
@@ -120,7 +119,6 @@ class Vivaldi():
 		return self.positions[node]
 
 	# Relative error of the predicted graph wrt real RTT graph
-	# TODO ???
 	def getRelativeError(self, predicted_graph):
 		rerr = []
 		i = 0
