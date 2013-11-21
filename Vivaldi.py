@@ -63,7 +63,6 @@ class Vivaldi():
 		ce = self.configuration.getCe()
 		for i in xrange(iters):
 			rtt_prediction = self.getRTTGraph()
-			self._update_progress(float(i)/iters)
 			
 			# for each node pick up K random neighbors
 			for (node, neighbors) in self.graph.getAdjacentList().iteritems():
@@ -71,17 +70,18 @@ class Vivaldi():
 				
 				# check how much the node has to "move" in terms of RTT towards/away his neighbors
 				movement = [0]*self.d
+				error_sum = 0
 
 				for (neighbor, rtt_measured) in random_neighbors:
-					if self.errors[node] == 0:
-						remote_confidence = 0.5
+					if self.errors[node] == 0: # "divide by zero"
+						remote_confidence = 0.01
 					else:
 						remote_confidence = self.errors[node] / (self.errors[node] + self.errors[neighbor])
 
-					error = rtt_prediction[node][neighbor] - rtt_measured
-					relative_error =  error / rtt_measured
+					absolute_error = rtt_prediction[node][neighbor] - rtt_measured
+					relative_error =  absolute_error / rtt_measured
 					
-					self.errors[node] = relative_error * ce * remote_confidence + self.errors[node] * (1 - ce * remote_confidence)
+					error_sum += (relative_error * ce * remote_confidence) + (self.errors[node] * (1 - ce * remote_confidence))
 
 					# If we are at the same position but want to move, let's go to random direction
 					# This happens at the very beginning, when all at position [0,0,0]
@@ -91,12 +91,14 @@ class Vivaldi():
 					direction = self._unit_vector(direction)
 
 					# delta = self.configuration.getDelta()
-					delta = 1 * remote_confidence
-					movement = vadd(movement, vmul(direction, delta * relative_error))
+					delta = .1 * remote_confidence
+					movement = vadd(movement, vmul(direction, delta * absolute_error))
 
 				# compute the new coordinates following the Vivaldi algorithm
 				self.positions[node] = vadd(self.positions[node], movement)
+				self.errors[node] = error_sum / len(neighbors)
 
+			self._update_progress(float(i)/iters)
 		print
 
 	# get the predicted RTT graph following Vivaldi.
@@ -127,7 +129,7 @@ class Vivaldi():
 			j = 0
 			for rtt_predicted in neighbor:
 				rtt_measured = self.graph.getRTT(i, j)
-				if rtt_predicted > 0:
+				if rtt_measured != 0:
 					r += abs((rtt_predicted - rtt_measured) / rtt_measured)
 				j += 1
 			rerr.append(r/len(neighbor))
