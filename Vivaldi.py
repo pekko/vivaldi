@@ -124,15 +124,15 @@ class Vivaldi():
 	def getRelativeError(self, predicted_graph):
 		rerr = []
 		i = 0
-		for neighbor in predicted_graph:
+		for neighbors in predicted_graph:
 			r = 0
 			j = 0
-			for rtt_predicted in neighbor:
+			for rtt_predicted in neighbors:
 				rtt_measured = self.graph.getRTT(i, j)
 				if rtt_measured != 0:
 					r += abs((rtt_predicted - rtt_measured) / rtt_measured)
 				j += 1
-			rerr.append(r/len(neighbor))
+			rerr.append(r/len(neighbors))
 			i += 1
 		return rerr
 	
