@@ -132,7 +132,7 @@ class Vivaldi():
 				if rtt_measured != 0:
 					r += abs((rtt_predicted - rtt_measured) / rtt_measured)
 				j += 1
-			rerr.append(r/len(neighbors))
+			rerr.append(r/j)
 			i += 1
 		return rerr
 	
