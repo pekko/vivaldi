@@ -78,8 +78,9 @@ class Vivaldi():
 					else:
 						remote_confidence = self.errors[node] / (self.errors[node] + self.errors[neighbor])
 
-					absolute_error = rtt_prediction[node][neighbor] - rtt_measured
-					relative_error =  abs(absolute_error) / rtt_measured
+					# Error is always >= 0. Direction will be get with vector calculations
+					absolute_error = abs(rtt_prediction[node][neighbor] - rtt_measured)
+					relative_error =  absolute_error / rtt_measured
 					
 					error_sum += (relative_error * ce * remote_confidence) + (self.errors[node] * (1 - ce * remote_confidence))
 
@@ -92,7 +93,7 @@ class Vivaldi():
 
 					# delta = self.configuration.getDelta()
 					delta = .1 * remote_confidence
-					movement = vadd(movement, vmul(direction, delta * abs(absolute_error)))
+					movement = vadd(movement, vmul(direction, delta * absolute_error))
 
 				# compute the new coordinates following the Vivaldi algorithm
 				self.positions[node] = vadd(self.positions[node], movement)
