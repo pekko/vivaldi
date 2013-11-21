@@ -36,6 +36,7 @@ class Vivaldi():
 		
 		# initialize positions with zero arrays
 		self.positions = [[0]*self.d for _ in xrange(self.configuration.getNumNodes())]
+		self.errors = [0]*self.configuration.getNumNodes()
 	
 	def _random_direction(self):
 		return [random.randint(0,10) for _ in xrange(self.d)]
@@ -59,6 +60,7 @@ class Vivaldi():
 
 		# for each iteration
 		iters = self.configuration.getNumInterations()
+		ce = self.configuration.getCe()
 		for i in xrange(iters):
 			rtt_prediction = self.getRTTGraph()
 			self._update_progress(float(i)/iters)
@@ -71,17 +73,26 @@ class Vivaldi():
 				movement = [0]*self.d
 
 				for (neighbor, rtt_measured) in random_neighbors:
-					relative_error = (rtt_prediction[node][neighbor] - rtt_measured) / rtt_measured
+					if self.errors[node] == 0:
+						remote_confidence = 0.5
+					else:
+						remote_confidence = self.errors[node] / (self.errors[node] + self.errors[neighbor])
+
+					error = rtt_prediction[node][neighbor] - rtt_measured
+					relative_error =  error / rtt_measured
 					
-					direction = vsub(self.positions[neighbor], self.positions[node])
+					self.errors[node] = relative_error * ce * remote_confidence + self.errors[node] * (1 - ce * remote_confidence)
 
 					# If we are at the same position but want to move, let's go to random direction
 					# This happens at the very beginning, when all at position [0,0,0]
+					direction = vsub(self.positions[neighbor], self.positions[node])
 					if all(direction) == 0:
 						direction = self._random_direction()
 					direction = self._unit_vector(direction)
 
-					movement = vadd(movement, vmul(direction, self.configuration.getDelta() * relative_error))
+					# delta = self.configuration.getDelta()
+					delta = 1 * remote_confidence
+					movement = vadd(movement, vmul(direction, delta * relative_error))
 
 				# compute the new coordinates following the Vivaldi algorithm
 				self.positions[node] = vadd(self.positions[node], movement)
@@ -117,7 +128,7 @@ class Vivaldi():
 			for rtt_predicted in neighbor:
 				rtt_measured = self.graph.getRTT(i, j)
 				if rtt_predicted > 0:
-					r += abs((rtt_predicted - rtt_measured) / rtt_predicted)
+					r += abs((rtt_predicted - rtt_measured) / rtt_measured)
 				j += 1
 			rerr.append(r/len(neighbor))
 			i += 1
