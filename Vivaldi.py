@@ -107,10 +107,9 @@ class Vivaldi():
 		prediction = [0] * self.configuration.getNumNodes()
 
 		for (nid, neighbors) in self.graph.getAdjacentList().iteritems():
-			my_position = self.positions[nid]
 			prediction[nid] = [0] * self.configuration.getNumNodes()
 			for (neighbor, rtt) in neighbors:
-				prediction[nid][neighbor] = norm(vsub(my_position, self.positions[neighbor]))
+				prediction[nid][neighbor] = norm(vsub(self.positions[nid], self.positions[neighbor]))
 
 		return prediction
 
