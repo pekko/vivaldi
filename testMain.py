@@ -32,7 +32,7 @@ if __name__== "__main__":
 	# These parameters are part of the Configuration.
 	# Modify them according to your need.
 	num_neighbors = 5
-	num_iterations = 100
+	num_iterations = 200
 	
 	# build a configuration and load the matrix into the graph
 	c = Configuration(num_nodes, num_neighbors, num_iterations)

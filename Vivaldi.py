@@ -35,9 +35,7 @@ class Vivaldi():
 		self.d = configuration.getNumDimension()
 		
 		# initialize positions with zero arrays
-		self.positions = {}
-		for (k,_) in graph.getAdjacentList().iteritems():
-			self.positions[k] = [0]*self.d
+		self.positions = [[0]*self.d for _ in xrange(self.configuration.getNumNodes())]
 	
 	def _random_direction(self):
 		return [random.randint(0,10) for _ in xrange(self.d)]
@@ -83,10 +81,10 @@ class Vivaldi():
 						direction = self._random_direction()
 					direction = self._unit_vector(direction)
 
-					movement += vmul(direction, self.configuration.getDelta() * relative_error)
+					movement = vadd(movement, vmul(direction, self.configuration.getDelta() * relative_error))
 
 				# compute the new coordinates following the Vivaldi algorithm
-				self.positions[node] += movement
+				self.positions[node] = vadd(self.positions[node], movement)
 
 		print
 
@@ -118,8 +116,6 @@ class Vivaldi():
 			j = 0
 			for rtt_predicted in neighbor:
 				rtt_measured = self.graph.getRTT(i, j)
-				if i ==0:
-					print rtt_measured, rtt_predicted
 				if rtt_predicted > 0:
 					r += abs((rtt_measured - rtt_predicted) / rtt_predicted)
 				j += 1
