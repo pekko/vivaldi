@@ -71,10 +71,10 @@ class Vivaldi():
 				movement = [0]*self.d
 
 				for (neighbor, rtt_measured) in random_neighbors:
-					relative_error = (rtt_measured - rtt_prediction[node][neighbor]) / rtt_measured
+					relative_error = (rtt_prediction[node][neighbor] - rtt_measured) / rtt_measured
 					
-					direction = vsub(self.positions[node], self.positions[neighbor])
-					
+					direction = vsub(self.positions[neighbor], self.positions[node])
+
 					# If we are at the same position but want to move, let's go to random direction
 					# This happens at the very beginning, when all at position [0,0,0]
 					if all(direction) == 0:
@@ -117,7 +117,7 @@ class Vivaldi():
 			for rtt_predicted in neighbor:
 				rtt_measured = self.graph.getRTT(i, j)
 				if rtt_predicted > 0:
-					r += abs((rtt_measured - rtt_predicted) / rtt_predicted)
+					r += abs((rtt_predicted - rtt_measured) / rtt_predicted)
 				j += 1
 			rerr.append(r/len(neighbor))
 			i += 1
