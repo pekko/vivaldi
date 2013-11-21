@@ -59,8 +59,8 @@ class Vivaldi():
 
 		# for each iteration
 		iters = self.configuration.getNumInterations()
-		rtt_prediction = self.getRTTGraph()
 		for i in xrange(iters):
+			rtt_prediction = self.getRTTGraph()
 			self._update_progress(float(i)/iters)
 			
 			# for each node pick up K random neighbors
