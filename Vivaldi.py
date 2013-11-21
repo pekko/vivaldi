@@ -92,7 +92,7 @@ class Vivaldi():
 
 					# delta = self.configuration.getDelta()
 					delta = .1 * remote_confidence
-					movement = vadd(movement, vmul(direction, delta * absolute_error))
+					movement = vadd(movement, vmul(direction, delta * abs(absolute_error)))
 
 				# compute the new coordinates following the Vivaldi algorithm
 				self.positions[node] = vadd(self.positions[node], movement)
