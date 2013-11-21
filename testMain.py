@@ -31,8 +31,8 @@ if __name__== "__main__":
 	
 	# These parameters are part of the Configuration.
 	# Modify them according to your need.
-	num_neighbors = 5
-	num_iterations = 200
+	num_neighbors  = 5
+	num_iterations = 1000
 	
 	# build a configuration and load the matrix into the graph
 	c = Configuration(num_nodes, num_neighbors, num_iterations)
@@ -53,19 +53,19 @@ if __name__== "__main__":
 
 	print
 	print "-"*50
-	print "Min rerr", min(rerr)*100,"%"
-	print "Max rerr", max(rerr)*100,"%"
+	print "Min rerr %6d %%" % (int(min(rerr)*100))
+	print "Max rerr %6d %%" % (int(max(rerr)*100))
 	print "-"*50
 	# print predicted
 	# print rerr
 
-	for i in v.positions:
-		print "%4d %4d" % (int(i[0]), int(i[1]))
+	# for i in v.positions:
+	# 	print "%4d %4d" % (int(i[0]), int(i[1]))
 
 	# Example (using pylab plotting function):
 	# x = [i[0] for i in v.positions]
 	# y = [i[1] for i in v.positions]
 
-	# # x,y = v.computeCDF(rerr)
-	# plot(x,y)
-	# show()
+	x,y = v.computeCDF(rerr)
+	plot(x,y)
+	show()
