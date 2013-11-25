@@ -43,8 +43,8 @@ if __name__== "__main__":
 	
 	# These parameters are part of the Configuration.
 	# Modify them according to your need.
-	num_neighbors  = 5
-	num_iterations = 100
+	num_neighbors  = 10
+	num_iterations = 1000
 	num_dimension = 3
 	
 	# build a configuration and load the matrix into the graph

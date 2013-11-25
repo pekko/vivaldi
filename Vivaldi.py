@@ -66,7 +66,7 @@ class Vivaldi():
 		iters = self.configuration.getNumInterations()
 		ce = self.configuration.getCe()
 		for i in xrange(iters):
-			rtt_prediction = self.getRTTGraph()
+			# rtt_prediction = self.getRTTGraph()
 			
 			# for each node pick up K random neighbors
 			for (node, neighbors) in self.graph.getAdjacentList().iteritems():
@@ -79,7 +79,7 @@ class Vivaldi():
 				for (neighbor, rtt_measured) in random_neighbors:
 					remote_confidence = self.errors[node] / (self.errors[node] + self.errors[neighbor])
 
-					absolute_error = (rtt_prediction[node][neighbor] - rtt_measured)
+					absolute_error = rtt_measured - self.getRTT(node, neighbor)
 					relative_error = min(1, abs(absolute_error) / rtt_measured)
 					
 					error_sum += (relative_error * ce * remote_confidence) + (self.errors[node] * (1 - ce * remote_confidence))
@@ -95,8 +95,9 @@ class Vivaldi():
 					movement = vadd(movement, vmul(direction, delta * absolute_error))
 
 				# compute the new coordinates following the Vivaldi algorithm
+				movement = vdiv(movement, len(random_neighbors))
 				self.positions[node] = vadd(self.positions[node], movement)
-				self.errors[node] = (error_sum) / len(neighbors)
+				self.errors[node] = (error_sum) / len(random_neighbors)
 
 			self._update_progress(float(i)/iters)
 		self._clear_progress()
@@ -112,6 +113,9 @@ class Vivaldi():
 				prediction[nid][neighbor] = norm(vsub(self.positions[nid], self.positions[neighbor]))
 
 		return prediction
+
+	def getRTT(self, fr, to):
+		return norm(vsub(self.positions[fr], self.positions[to]))
 
 	# get the position of a node 
 	def getPositions(self, node):
