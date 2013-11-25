@@ -54,6 +54,11 @@ class Vivaldi():
 		sys.stdout.write("\r[" + "="*done + " "*left + "] " + str(int(100*progress)) + " % ")
 		sys.stdout.flush()
 
+	def _clear_progress(self):
+		sys.stdout.write("\r")
+		sys.stdout.flush()
+		print
+
 	# Core of the Vivaldi algorithm
 	def run(self):
 		#TODO: Vivaldi run
@@ -100,7 +105,7 @@ class Vivaldi():
 				self.errors[node] = error_sum / len(neighbors)
 
 			self._update_progress(float(i)/iters)
-		print
+		self._clear_progress()
 
 	# get the predicted RTT graph following Vivaldi.
 	def getRTTGraph(self):

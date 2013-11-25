@@ -17,6 +17,18 @@ def buildgraph(rows):
 	
 	return g
 	
+def table(data, title=""):
+	print
+	print "="*30
+	print title
+	print "-"*len(title)
+
+	length = len(data)
+	print "Average %4d" % (float(sum(data))/length )
+	print "Median  %4d" % (data[int(length/2)] )
+	print "Min     %4d" % (min(data) )
+	print "Max     %4d" % (max(data) )
+	print "="*30
 	
 if __name__== "__main__":
 	if len(sys.argv) != 2:
@@ -31,11 +43,12 @@ if __name__== "__main__":
 	
 	# These parameters are part of the Configuration.
 	# Modify them according to your need.
-	num_neighbors  = 5
-	num_iterations = 1000
+	num_neighbors  = 10
+	num_iterations = 100
+	num_dimension = 3
 	
 	# build a configuration and load the matrix into the graph
-	c = Configuration(num_nodes, num_neighbors, num_iterations)
+	c = Configuration(num_nodes, num_neighbors, num_iterations, d=num_dimension)
 	init_graph = buildgraph(rows)
 
 	print "Running Vivaldi on a %d size matrix" % num_nodes
@@ -51,11 +64,7 @@ if __name__== "__main__":
 	predicted = v.getRTTGraph()
 	rerr = v.getRelativeError(predicted)
 
-	print
-	print "-"*50
-	print "Min rerr %6d %%" % (int(min(rerr)*100))
-	print "Max rerr %6d %%" % (int(max(rerr)*100))
-	print "-"*50
+	table([100*x for x in rerr], "RELATIVE ERROR (%)")
 	# print predicted
 	# print rerr
 
