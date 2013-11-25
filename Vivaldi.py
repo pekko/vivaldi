@@ -26,17 +26,16 @@ def norm(v):
 	return sqrt(sum([a*a for a in v]))
 
 
-
-
 class Vivaldi():
 	def __init__(self, graph, configuration):
+		random.seed(1337)
 		self.graph = graph
 		self.configuration = configuration
 		self.d = configuration.getNumDimension()
 		
 		# initialize positions with zero arrays
 		self.positions = [[0]*self.d for _ in xrange(self.configuration.getNumNodes())]
-		self.errors = [0]*self.configuration.getNumNodes()
+		self.errors = [1]*self.configuration.getNumNodes()
 	
 	def _random_direction(self):
 		return [random.randint(0,10) for _ in xrange(self.d)]
@@ -51,7 +50,7 @@ class Vivaldi():
 		done = int(progress*length)
 		left = length-done
 
-		sys.stdout.write("\r[" + "="*done + " "*left + "] " + str(int(100*progress)) + " % ")
+		sys.stdout.write("\r[" + "="*done + ">" +" "*left + "] " + str(int(100*progress)) + " % ")
 		sys.stdout.flush()
 
 	def _clear_progress(self):
@@ -78,10 +77,7 @@ class Vivaldi():
 				error_sum = 0
 
 				for (neighbor, rtt_measured) in random_neighbors:
-					if self.errors[node] == 0: # "divide by zero"
-						remote_confidence = 0.01
-					else:
-						remote_confidence = self.errors[node] / (self.errors[node] + self.errors[neighbor])
+					remote_confidence = self.errors[node] / (self.errors[node] + self.errors[neighbor])
 
 					# Error is always >= 0. Direction will be get with vector calculations
 					absolute_error = abs(rtt_prediction[node][neighbor] - rtt_measured)
@@ -96,8 +92,7 @@ class Vivaldi():
 						direction = self._random_direction()
 					direction = self._unit_vector(direction)
 
-					# delta = self.configuration.getDelta()
-					delta = .1 * remote_confidence
+					delta = ce * remote_confidence
 					movement = vadd(movement, vmul(direction, delta * absolute_error))
 
 				# compute the new coordinates following the Vivaldi algorithm
