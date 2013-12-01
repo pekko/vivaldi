@@ -4,6 +4,7 @@
 from math import sqrt
 import random
 import sys
+from matplotlib import pyplot
 
 # from Graph import Graph
 # from Configuration import Configuration
@@ -47,7 +48,7 @@ class Vivaldi():
 
 	def _update_progress(self, progress):
 		length = 50
-		done = int(progress*length)
+		done = int(round(progress*length))
 		left = length-done
 
 		sys.stdout.write("\r[" + "="*done + ">" +" "*left + "] " + str(int(100*progress)) + " % ")
@@ -65,42 +66,50 @@ class Vivaldi():
 		# for each iteration
 		iters = self.configuration.getNumInterations()
 		ce = self.configuration.getCe()
+
+		errorplot = []
+
 		for i in xrange(iters):
 			# rtt_prediction = self.getRTTGraph()
 			
+			temp_errorplot = 0
 			# for each node pick up K random neighbors
 			for (node, neighbors) in self.graph.getAdjacentList().iteritems():
 				random_neighbors = [random.choice(neighbors) for _ in xrange(self.configuration.getNumNeighbors())]
 				
-				# check how much the node has to "move" in terms of RTT towards/away his neighbors
-				movement = [0]*self.d
 				error_sum = 0
 
 				for (neighbor, rtt_measured) in random_neighbors:
 					remote_confidence = self.errors[node] / (self.errors[node] + self.errors[neighbor])
 
-					absolute_error = (self.getRTT(node, neighbor) - rtt_measured)
-					relative_error = min(1, abs(absolute_error) / rtt_measured)
+					absolute_error = (self.distance(node, neighbor) - rtt_measured)
+					relative_error = abs(absolute_error) / rtt_measured
 					
 					error_sum += (relative_error * ce * remote_confidence) + (self.errors[node] * (1 - ce * remote_confidence))
+					temp_errorplot += abs(absolute_error)
 
 					# If we are at the same position but want to move, let's go to random direction
 					# This happens at the very beginning, when all at position [0,0,0]
 					direction = vsub(self.positions[neighbor], self.positions[node])
-					if all(direction) == 0:
+					if all(direction) == False:
 						direction = self._random_direction()
 					direction = self._unit_vector(direction)
 
 					delta = ce * remote_confidence
-					movement = vadd(movement, vmul(direction, delta * absolute_error))
+					
+					# check how much the node has to "move" in terms of RTT towards/away his neighbors
+					# compute the new coordinates following the Vivaldi algorithm
+					movement = vmul(direction, delta*absolute_error)
+					self.positions[node] = vadd(self.positions[node], movement)
 
-				# compute the new coordinates following the Vivaldi algorithm
-				movement = vdiv(movement, len(random_neighbors))
-				self.positions[node] = vadd(self.positions[node], movement)
-				self.errors[node] = (error_sum) / len(random_neighbors)
+				self.errors[node] = error_sum / len(random_neighbors)
 
+			errorplot.append(temp_errorplot / (self.configuration.getNumNodes() * self.configuration.getNumNeighbors()))
 			self._update_progress(float(i)/iters)
 		self._clear_progress()
+		
+		pyplot.plot(range(len(errorplot)), errorplot)
+		pyplot.show()
 
 	# get the predicted RTT graph following Vivaldi.
 	def getRTTGraph(self):
@@ -114,7 +123,7 @@ class Vivaldi():
 
 		return prediction
 
-	def getRTT(self, fr, to):
+	def distance(self, fr, to):
 		return norm(vsub(self.positions[fr], self.positions[to]))
 
 	# get the position of a node 
