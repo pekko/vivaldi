@@ -79,7 +79,7 @@ class Vivaldi():
 				for (neighbor, rtt_measured) in random_neighbors:
 					remote_confidence = self.errors[node] / (self.errors[node] + self.errors[neighbor])
 
-					absolute_error = rtt_measured - self.getRTT(node, neighbor)
+					absolute_error = (self.getRTT(node, neighbor) - rtt_measured)
 					relative_error = min(1, abs(absolute_error) / rtt_measured)
 					
 					error_sum += (relative_error * ce * remote_confidence) + (self.errors[node] * (1 - ce * remote_confidence))
