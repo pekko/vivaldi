@@ -61,16 +61,20 @@ def simulate():
 	num_neighbors_options = [3, 10, 20]
 	num_iterations_options = [20, 200, 1000]
 	runs_per_config = 1
+
+	total_runs = len(num_neighbors_options) * len(num_iterations_options) * runs_per_config
+	runs_done = 0
 	rerr = [None]*(len(num_neighbors_options)*len(num_iterations_options))
 	conf = [None]*(len(num_neighbors_options)*len(num_iterations_options))
 	curr_conf = 0
+
 	for num_neighbors in num_neighbors_options:
 		for num_iterations in num_iterations_options:
 			c = Configuration(num_nodes, num_neighbors, num_iterations)
 
 			conf_rerr = [0]*num_nodes
 			conf[curr_conf] = "K: {}, i: {}".format(num_neighbors, num_iterations)
-			update_runs_completed(0, runs_per_config)
+			update_runs_completed(runs_done, total_runs)
 			for run in xrange(runs_per_config):
 				v = Vivaldi(init_graph, c)
 				v.run()
@@ -80,13 +84,15 @@ def simulate():
 				for i in xrange(num_nodes):
 					conf_rerr[i] += temp_rerr[i]
 
-				update_runs_completed(run+1, runs_per_config)
-			finish_runs_completed(runs_per_config)
+				runs_done += 1
+				update_runs_completed(runs_done, total_runs)
 
 			for i in xrange(num_nodes):
 				conf_rerr[i] = conf_rerr[i] / runs_per_config
 			rerr[curr_conf] = conf_rerr
 			curr_conf += 1
+			
+	finish_runs_completed(runs_per_config)
 	return rerr, conf
 
 if __name__== "__main__":
