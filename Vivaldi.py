@@ -72,7 +72,7 @@ class Vivaldi():
 		for i in xrange(iters):
 			# rtt_prediction = self.getRTTGraph()
 			
-			temp_errorplot = 0
+			temp_errorplot = 0.0
 			# for each node pick up K random neighbors
 			for (node, neighbors) in self.graph.getAdjacentList().iteritems():
 				random_neighbors = [random.choice(neighbors) for _ in xrange(self.configuration.getNumNeighbors())]
@@ -109,6 +109,7 @@ class Vivaldi():
 		self._clear_progress()
 		
 		pyplot.plot(range(len(errorplot)), errorplot)
+		pyplot.ylim(ymin=0)
 		pyplot.show()
 
 	# get the predicted RTT graph following Vivaldi.
