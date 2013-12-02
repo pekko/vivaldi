@@ -37,6 +37,7 @@ class Vivaldi():
 		# initialize positions with zero arrays
 		self.positions = [[0]*self.d for _ in xrange(self.configuration.getNumNodes())]
 		self.errors = [1]*self.configuration.getNumNodes()
+		self.error_history = [0] * self.configuration.getNumInterations()
 	
 	def _random_direction(self):
 		return [random.randint(0,10) for _ in xrange(self.d)]
@@ -67,12 +68,10 @@ class Vivaldi():
 		iters = self.configuration.getNumInterations()
 		ce = self.configuration.getCe()
 
-		errorplot = []
-
 		for i in xrange(iters):
 			# rtt_prediction = self.getRTTGraph()
 			
-			temp_errorplot = 0.0
+			temp_error_history = 0.0
 			# for each node pick up K random neighbors
 			for (node, neighbors) in self.graph.getAdjacentList().iteritems():
 				random_neighbors = [random.choice(neighbors) for _ in xrange(self.configuration.getNumNeighbors())]
@@ -86,7 +85,7 @@ class Vivaldi():
 					relative_error = abs(absolute_error) / rtt_measured
 					
 					error_sum += (relative_error * ce * remote_confidence) + (self.errors[node] * (1 - ce * remote_confidence))
-					temp_errorplot += abs(absolute_error)
+					temp_error_history += abs(absolute_error)
 
 					# If we are at the same position but want to move, let's go to random direction
 					# This happens at the very beginning, when all at position [0,0,0]
@@ -104,7 +103,7 @@ class Vivaldi():
 
 				self.errors[node] = error_sum / len(random_neighbors)
 
-			errorplot.append(temp_errorplot / (self.configuration.getNumNodes() * self.configuration.getNumNeighbors()))
+			self.error_history[i] = (temp_error_history / (self.configuration.getNumNodes() * self.configuration.getNumNeighbors()))
 			#self._update_progress(float(i)/iters)
 		#self._clear_progress()
 		

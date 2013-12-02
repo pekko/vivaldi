@@ -52,19 +52,39 @@ def plot_rerr(rerr, conf):
 		x, y = computeCDF(rerr[i])
 		plot(x, y, color[i%len(color)], label=conf[i])
 
+	title("Relative error for each node, CDF")
 	legend(loc="lower right") #lower, upper, left, right
 	show()
 
+def plot_error_history(history, conf):
+	color = ['b', 'g', 'r', 'b+', 'g+', 'r+', 'b.', 'g.', 'r.']
+	for i in xrange(len(history)):
+		x, y = (range(len(history[i])), history[i])
+		plot(x, y, color[i%len(color)], label=conf[i])
+
+	title("Average of absolute error for each iteration")
+	legend(loc="upper right") #lower, upper, left, right
+	show()
+
+def listadd(list, other):
+	for i in xrange(len(list)):
+		list[i] += other[i]
+
+def listdiv(list, divisor):
+	for i in xrange(len(list)):
+		list[i] /= divisor
 
 def simulate():
 	random.seed(1234)
 	num_neighbors_options = [3, 10, 20]
-	num_iterations_options = [20, 200, 1000]
+	# reverse order because of plot_error_history
+	num_iterations_options = [1000, 200, 20]
 	runs_per_config = 1
 
 	total_runs = len(num_neighbors_options) * len(num_iterations_options) * runs_per_config
 	runs_done = 0
 	rerr = [None]*(len(num_neighbors_options)*len(num_iterations_options))
+	error_history = [None]*(len(num_neighbors_options)*len(num_iterations_options))
 	conf = [None]*(len(num_neighbors_options)*len(num_iterations_options))
 	curr_conf = 0
 
@@ -73,6 +93,8 @@ def simulate():
 			c = Configuration(num_nodes, num_neighbors, num_iterations)
 
 			conf_rerr = [0]*num_nodes
+			conf_error_history = [0]*num_iterations
+
 			conf[curr_conf] = "K: {}, i: {}".format(num_neighbors, num_iterations)
 			update_runs_completed(runs_done, total_runs)
 			for run in xrange(runs_per_config):
@@ -81,19 +103,25 @@ def simulate():
 				predicted = v.getRTTGraph()
 				temp_rerr = v.getRelativeError(predicted)
 
-				for i in xrange(num_nodes):
-					conf_rerr[i] += temp_rerr[i]
+				listadd(conf_rerr, temp_rerr)
+				listadd(conf_error_history, v.error_history)
 
 				runs_done += 1
 				update_runs_completed(runs_done, total_runs)
 
-			for i in xrange(num_nodes):
-				conf_rerr[i] = conf_rerr[i] / runs_per_config
+			listdiv(conf_rerr, runs_per_config)
+			listdiv(conf_error_history, runs_per_config)
+
 			rerr[curr_conf] = conf_rerr
+			error_history[curr_conf] = conf_error_history
+
 			curr_conf += 1
-			
+
 	finish_runs_completed(runs_per_config)
-	return rerr, conf
+	return {
+		'rerr' : rerr,
+		'error_history': error_history
+	}, conf
 
 if __name__== "__main__":
 	if len(sys.argv) != 2:
@@ -109,12 +137,12 @@ if __name__== "__main__":
 
 	init_graph = buildgraph(rows)
 
-	rerr, conf = simulate()
+	simulation_data, conf = simulate()
 	#print rerr[0]
 
-	
-	table([100*x for x in rerr[0]], "RELATIVE ERROR (%)")
-	plot_rerr(rerr, conf);
+	table([100*x for x in simulation_data['rerr'][0]], "RELATIVE ERROR (%)")
+	plot_rerr(simulation_data['rerr'], conf)
+	plot_error_history(simulation_data['error_history'], conf)
 
 	#x,y = computeCDF(rerr)
 	#plot(x,y)
