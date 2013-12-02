@@ -29,7 +29,7 @@ def norm(v):
 
 class Vivaldi():
 	def __init__(self, graph, configuration):
-		random.seed(1337)
+		#random.seed(1337)
 		self.graph = graph
 		self.configuration = configuration
 		self.d = configuration.getNumDimension()
@@ -105,12 +105,12 @@ class Vivaldi():
 				self.errors[node] = error_sum / len(random_neighbors)
 
 			errorplot.append(temp_errorplot / (self.configuration.getNumNodes() * self.configuration.getNumNeighbors()))
-			self._update_progress(float(i)/iters)
-		self._clear_progress()
+			#self._update_progress(float(i)/iters)
+		#self._clear_progress()
 		
-		pyplot.plot(range(len(errorplot)), errorplot)
-		pyplot.ylim(ymin=0)
-		pyplot.show()
+		#pyplot.plot(range(len(errorplot)), errorplot)
+		#pyplot.ylim(ymin=0)
+		#pyplot.show()
 
 	# get the predicted RTT graph following Vivaldi.
 	def getRTTGraph(self):
