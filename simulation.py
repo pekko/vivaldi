@@ -47,7 +47,7 @@ def computeCDF(input_):
 	return x,y
 
 def plot_rerr(rerr, conf):
-	color = ['b', 'g', 'r', 'b+', 'g+', 'r+', 'b', 'g', 'r']
+	color = ['b', 'g', 'r', 'b+', 'g+', 'r+', 'b.', 'g.', 'r.']
 	for i in range(len(rerr)):
 		x, y = computeCDF(rerr[i])
 		plot(x, y, color[i%len(color)], label=conf[i])
