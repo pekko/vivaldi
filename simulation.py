@@ -28,8 +28,14 @@ def table(data, title=""):
 
 	print "Average %4d" % (float(sum(data))/length )
 	print "Median  %4d" % (data[int(length/2)] )
-	print "Min     %4d" % (min(data) )
+	print "Var     %4d" % (variance(data) )
 	print "Max     %4d" % (max(data) )
+	print "Min     %4d" % (min(data) )
+	print "-----------"
+	print "Percentiles:"
+	print "50      %4d" % (percentile(data, 0.5) )
+	print "90      %4d" % (percentile(data, 0.9) )
+	print "99      %4d" % (percentile(data, 0.99) )
 	print "="*30
 	
 
@@ -86,12 +92,25 @@ def listdiv(list, divisor):
 	for i in xrange(len(list)):
 		list[i] /= divisor
 
+def variance(data):
+	avg = float(sum(data))/len(data)
+	return sum([(x-avg)*(x-avg) for x in data])/ (len(data) - 1)
+
+def percentile(data, gamma):
+	x, y = computeCDF(data)
+	for i in xrange(len(x)):
+		if (y[i] > gamma):
+			return x[i]
+	return -1
+
 def simulate():
 	random.seed(1234)
-	num_neighbors_options = [3, 10, 20]
+	#num_neighbors_options = [3, 10, 20]
+	num_neighbors_options = [20]
 	# reverse order because of plot_error_history
-	num_iterations_options = [1000, 200, 20]
-	runs_per_config = 1
+	#num_iterations_options = [1000, 200, 20]
+	num_iterations_options = [1000]
+	runs_per_config = 3
 
 	total_runs = len(num_neighbors_options) * len(num_iterations_options) * runs_per_config
 	runs_done = 0
@@ -158,7 +177,9 @@ if __name__== "__main__":
 	simulation_data, conf = simulate()
 	#print rerr[0]
 
-	table([100*x for x in simulation_data['rerr'][0]], "RELATIVE ERROR (%)")
+	table([float(100*x) for x in simulation_data['rerr'][0]], "RELATIVE ERROR (%)")
+
+
 	plot_rerr(simulation_data['rerr'], conf)
 	plot_error_history(simulation_data['error_history'], conf)
 	plot_move_dist_history(simulation_data['move_length_history'], conf)
