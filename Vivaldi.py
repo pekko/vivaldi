@@ -38,6 +38,7 @@ class Vivaldi():
 		self.positions = [[0]*self.d for _ in xrange(self.configuration.getNumNodes())]
 		self.errors = [1]*self.configuration.getNumNodes()
 		self.error_history = [0] * self.configuration.getNumInterations()
+		self.move_len_history = [0] * self.configuration.getNumInterations()
 	
 	def _random_direction(self):
 		return [random.randint(0,10) for _ in xrange(self.d)]
@@ -77,7 +78,7 @@ class Vivaldi():
 				random_neighbors = [random.choice(neighbors) for _ in xrange(self.configuration.getNumNeighbors())]
 				
 				error_sum = 0
-
+				move_len = 0
 				for (neighbor, rtt_measured) in random_neighbors:
 					remote_confidence = self.errors[node] / (self.errors[node] + self.errors[neighbor])
 
@@ -99,10 +100,11 @@ class Vivaldi():
 					# check how much the node has to "move" in terms of RTT towards/away his neighbors
 					# compute the new coordinates following the Vivaldi algorithm
 					movement = vmul(direction, delta*absolute_error)
+					move_len += norm(movement)
 					self.positions[node] = vadd(self.positions[node], movement)
 
 				self.errors[node] = error_sum / len(random_neighbors)
-
+				self.move_len_history[i] += move_len / (self.configuration.getNumNodes() * len(random_neighbors))
 			self.error_history[i] = (temp_error_history / (self.configuration.getNumNodes() * self.configuration.getNumNeighbors()))
 			#self._update_progress(float(i)/iters)
 		#self._clear_progress()
