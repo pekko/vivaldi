@@ -68,6 +68,7 @@ def plot_error_history(history, conf):
 		x, y = (range(len(history[i])), history[i])
 		plot(x, y, color[i%len(color)], label=conf[i])
 
+	#yscale('log')
 	title("Average of absolute error for each iteration")
 	legend(loc="upper right") #lower, upper, left, right
 	show()
@@ -78,7 +79,7 @@ def plot_move_dist_history(history, conf):
 		x, y = (range(len(history[i])), history[i])
 		plot(x, y, color[i%len(color)], label=conf[i])
 
-	yscale('log')
+	#yscale('log')
 	title("Average of length of movement per node for each iteration")
 	legend(loc="upper right") #lower, upper, left, right
 	show()
@@ -106,7 +107,7 @@ def percentile(data, gamma):
 def simulate():
 	random.seed(1234)
 	#num_neighbors_options = [3, 10, 20]
-	num_neighbors_options = [20]
+	num_neighbors_options = [3, 10, 20]
 	# reverse order because of plot_error_history
 	#num_iterations_options = [1000, 200, 20]
 	num_iterations_options = [1000]
