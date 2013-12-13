@@ -87,11 +87,11 @@ Hypothesis
 
 \begin_layout Standard
 We run our implementation varying two parameters, number of iterations and
- number of random-selected neighbors.
+ number of random-selected neighbours.
  Because the algorithm is iterative, we expected that greater number of
  iterations will give us better results (e.g.
  lower error).
- Also, if we calculate the values with more neighbors, we expected that
+ Also, if we calculate the values with more neighbours, we expected that
  algorithm would converge faster.
 \end_layout
 
@@ -166,433 +166,13 @@ random.seed(1234)
 \end_layout
 
 \begin_layout Standard
-We calculated the average relative error for each node after all the iterations,
- and some metrics on this value can be found in table 1 in Appendix B.
- 
-\end_layout
-
-\begin_layout Standard
 The results we obtained when varying the number of neighbors and iterations
- can be seen in the graphs in appendix A.
+ can be seen in the graphs below, as well as some more detailed data in
+ the table.
  
 \end_layout
 
-\begin_layout Section*
-Discussion
-\end_layout
-
 \begin_layout Standard
-We can see from table that parameters have very little impact on actual
- results.
- This means that the algorithm converges towards stable state very fast,
- and this can be also seen from graphs above.
- Average movement keeps relatively stable after only a few iterations, and
- also absolute error keeps stable after only few dozen iterations.
-\end_layout
-
-\begin_layout Standard
-However, errors at stable stage are still quite large, median error being
- more than 200 percent.
- Vivaldi algorithm assumes that input data has basic geometric properties:
- distance from A to B is the same as distance from B to A, and triangle
- inequality 
-\begin_inset Formula $|x+y|\leq|x|+|y|$
-\end_inset
-
- holds.
- However, with internet delays this is not always the case, and therefore
- Vivaldi algorithm will not achieve perfect results.
-\end_layout
-
-\begin_layout Standard
-In a conclusion, the algorithm converges fast, but actual results are not
- so good.
-\begin_inset Newpage pagebreak
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section*
-Appendix A: Graphical representation of results
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i20_rerr.png
-	width 70page%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-CDF
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align left
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i20_movelen.png
-	width 45text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Average move length
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i20_abserr.png
-	width 45text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\align right
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Absolute error
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Simulations width 20 iterations
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i200_rerr.png
-	width 70page%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-CDF
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\align left
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i200_movelen.png
-	width 45text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Average move length
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i200_abserr.png
-	width 45text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\align right
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Absolute error
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Simulations width 20 iterations
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i1000_rerr.png
-	width 70page%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-CDF
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align left
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i1000_movelen.png
-	width 45text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Average move length
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i1000_abserr.png
-	width 45text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\align right
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Absolute error
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Simulations width 20 iterations
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section*
-Appendix B: Overview of results
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float table
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
 \begin_inset Tabular
 <lyxtabular version="3" rows="10" columns="10">
 <features tabularvalignment="middle">
@@ -968,7 +548,7 @@ min
 \begin_inset Text
 
 \begin_layout Plain Layout
-1104
+
 \end_layout
 
 \end_inset
@@ -1060,7 +640,7 @@ min
 \begin_inset Text
 
 \begin_layout Plain Layout
-1146
+
 \end_layout
 
 \end_inset
@@ -1152,7 +732,7 @@ min
 \begin_inset Text
 
 \begin_layout Plain Layout
-1050
+
 \end_layout
 
 \end_inset
@@ -1244,7 +824,7 @@ min
 \begin_inset Text
 
 \begin_layout Plain Layout
-1091
+
 \end_layout
 
 \end_inset
@@ -1336,7 +916,7 @@ min
 \begin_inset Text
 
 \begin_layout Plain Layout
-991
+
 \end_layout
 
 \end_inset
@@ -1428,7 +1008,7 @@ min
 \begin_inset Text
 
 \begin_layout Plain Layout
-1068
+
 \end_layout
 
 \end_inset
@@ -1520,27 +1100,13 @@ min
 \begin_inset Text
 
 \begin_layout Plain Layout
-1145
+
 \end_layout
 
 \end_inset
 </cell>
 </row>
 </lyxtabular>
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Results from simulation
-\end_layout
-
-\end_inset
-
-
-\end_layout
 
 \end_inset
 

@@ -38,3 +38,5 @@ nosetests.xml
 .pydevproject
 
 report.lyx~
+
+#report.lyx#
