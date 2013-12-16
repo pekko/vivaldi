@@ -40,3 +40,5 @@ nosetests.xml
 report.lyx~
 
 #report.lyx#
+
+*.lyx#

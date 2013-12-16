@@ -132,9 +132,150 @@ We resolved the problem by setting everyone’s initial coordinates at zero.
 \end_layout
 
 \begin_layout Standard
-To obtain reliable results, we ran our simulation multiple times with each
- set of parameters.
- This value is called runs_per_config below.
+We chose the variable 
+\begin_inset Formula $c_{c}$
+\end_inset
+
+ to be equal to 
+\begin_inset Formula $c_{e}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection*
+Calculation of Relative Error
+\end_layout
+
+\begin_layout Standard
+Every node has a measured round-trip time to a neighbor denoted as 
+\begin_inset Formula $rtt_{measured}$
+\end_inset
+
+.
+ Also, it has a predicted round-trip time 
+\begin_inset Formula $rtt_{predicted}$
+\end_inset
+
+ which is the euclidian distance between the two nodes, derived from the
+ resulting graph of running the Vivaldi algorithm.
+ The relative error 
+\begin_inset Formula $e$
+\end_inset
+
+ between a node 
+\begin_inset Formula $i$
+\end_inset
+
+ and its neighbor 
+\begin_inset Formula $k$
+\end_inset
+
+ is computed by calculating the following.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+e{}_{i_{k}}=|\frac{rtt_{predicted}-rtt_{measured}}{rtt_{measured}}|
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The average relative error in a node 
+\begin_inset Formula $\bar{{e_{i}}}$
+\end_inset
+
+ with 
+\begin_inset Formula $K$
+\end_inset
+
+ neighbors is calculated by the following formula.
+ We use this average as our measure of the relative error in a node.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\bar{{e_{i}}}=\dfrac{1}{K}{\displaystyle \sum_{k}e_{i_{k}}}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Having this we can calculate the relative error 
+\begin_inset Formula $E$
+\end_inset
+
+ in the graph consisting of 
+\begin_inset Formula $n$
+\end_inset
+
+ nodes by the following formula
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+E=\dfrac{1}{n}\sum_{i}\bar{{e_{i}}}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Running simulation
+\end_layout
+
+\begin_layout Standard
+We chose to create a new file simulation.py to be able to collect data from
+ several runs at once.
+ We chose to do this to reduce the difference in environment in different
+ runs.
+ Doing this we were also able to run the same configuration multiple times,
+ thus adding confidence that our results are describing the general case
+ and not some obscure special case.
+ The number of times each configuration is simulated is denoted in the code
+ as runs_per_config, and can be found in the simulation.py file.
+\end_layout
+
+\begin_layout Standard
+To run the simulation with multiple configurations at once one can use the
+ following command.
+ (The table of results printed to stdout is representing the first configuration
+, being values for 
+\begin_inset Formula $i$
+\end_inset
+
+ and 
+\begin_inset Formula $K$
+\end_inset
+
+) 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+python simulation.py VivaldiMatrix.txt
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section*
@@ -167,422 +308,14 @@ random.seed(1234)
 
 \begin_layout Standard
 We calculated the average relative error for each node after all the iterations,
- and some metrics on this value can be found in table 1 in Appendix B.
+ and some metrics on this value can be found in table 1.
  
 \end_layout
 
 \begin_layout Standard
 The results we obtained when varying the number of neighbors and iterations
- can be seen in the graphs in appendix A.
+ can also be seen in the graphs in appendix A.
  
-\end_layout
-
-\begin_layout Section*
-Discussion
-\end_layout
-
-\begin_layout Standard
-We can see from table that parameters have very little impact on actual
- results.
- This means that the algorithm converges towards stable state very fast,
- and this can be also seen from graphs above.
- Average movement keeps relatively stable after only a few iterations, and
- also absolute error keeps stable after only few dozen iterations.
-\end_layout
-
-\begin_layout Standard
-However, errors at stable stage are still quite large, median error being
- more than 200 percent.
- Vivaldi algorithm assumes that input data has basic geometric properties:
- distance from A to B is the same as distance from B to A, and triangle
- inequality 
-\begin_inset Formula $|x+y|\leq|x|+|y|$
-\end_inset
-
- holds.
- However, with internet delays this is not always the case, and therefore
- Vivaldi algorithm will not achieve perfect results.
-\end_layout
-
-\begin_layout Standard
-In a conclusion, the algorithm converges fast, but actual results are not
- so good.
-\begin_inset Newpage pagebreak
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section*
-Appendix A: Graphical representation of results
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i20_rerr.png
-	width 70page%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-CDF
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align left
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i20_movelen.png
-	width 45text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Average move length
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i20_abserr.png
-	width 45text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\align right
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Absolute error
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Simulations width 20 iterations
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i200_rerr.png
-	width 70page%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-CDF
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\align left
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i200_movelen.png
-	width 45text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Average move length
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i200_abserr.png
-	width 45text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\align right
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Absolute error
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Simulations width 20 iterations
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i1000_rerr.png
-	width 70page%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-CDF
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align left
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i1000_movelen.png
-	width 45text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Average move length
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename /Users/Martin/Documents/i1000_abserr.png
-	width 45text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\align right
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Absolute error
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Simulations width 20 iterations
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section*
-Appendix B: Overview of results
 \end_layout
 
 \begin_layout Standard
@@ -1534,7 +1267,411 @@ min
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Results from simulation
+Relative errors (%) from simulations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Discussion
+\end_layout
+
+\begin_layout Standard
+We can see from table that parameters have very little impact on actual
+ results.
+ This means that the algorithm converges towards stable state very fast,
+ and this can be also seen from graphs in Appendix A.
+ Average movement keeps relatively stable after only a few iterations, and
+ also absolute error keeps stable after only few dozen iterations.
+\end_layout
+
+\begin_layout Standard
+However, errors at stable stage are still quite large, median error being
+ more than 200 percent.
+ Vivaldi algorithm assumes that input data has basic geometric properties:
+ distance from A to B is the same as distance from B to A, and triangle
+ inequality 
+\begin_inset Formula $|x+y|\leq|x|+|y|$
+\end_inset
+
+ holds.
+ However, with internet delays this is not always the case, and therefore
+ Vivaldi algorithm will not achieve perfect results.
+\end_layout
+
+\begin_layout Standard
+In a conclusion, the algorithm converges fast, but actual results are not
+ so good.
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Appendix A: Graphical representation of results
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /Users/Martin/Documents/i20_rerr.png
+	width 70page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+CDF
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset Graphics
+	filename /Users/Martin/Documents/i20_movelen.png
+	width 45text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Average move length (ms) per iteration
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/Martin/Documents/i20_abserr.png
+	width 45text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align right
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Absolute average error (ms) per iteration 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Simulations with 20 iterations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /Users/Martin/Documents/i200_rerr.png
+	width 70page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+CDF
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset Graphics
+	filename /Users/Martin/Documents/i200_movelen.png
+	width 45text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Average move length (ms) per iteration
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/Martin/Documents/i200_abserr.png
+	width 45text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align right
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Absolute average error (ms) per iteration
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Simulations with 20 iterations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /Users/Martin/Documents/i1000_rerr.png
+	width 70page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+CDF
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset Graphics
+	filename /Users/Martin/Documents/i1000_movelen.png
+	width 45text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Average move length (ms) per iteration
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/Martin/Documents/i1000_abserr.png
+	width 45text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align right
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Absolute average error (ms) per iteration
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Simulations with 20 iterations
 \end_layout
 
 \end_inset
